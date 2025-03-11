@@ -326,17 +326,14 @@ export class RegisterComponent {
             // Obtener las horas y minutos seleccionados
             const horaInicio = parseInt((document.querySelector('select[name="horaInicio"]') as HTMLSelectElement).value, 10);
             const horaFin = parseInt((document.querySelector('select[name="horaFin"]') as HTMLSelectElement).value, 10);
-            // Agregar depuración para verificar los valores
-            console.log('Hora Inicio:', horaInicio, 'Minutos Inicio:');
-            console.log('Hora Fin:', horaFin, 'Minutos Fin:');
             // Validar que la hora de cierre es posterior a la de apertura
-            if (horaFin < horaInicio || (horaFin === horaInicio )) {
+            if (horaFin <= horaInicio) {
                 this.notificacionService.showMessage('La hora de cierre debe ser superior a la hora de apertura', 'error');
                 return;
             }
             // Asignar las horas seleccionadas a las propiedades
-            this.horaInicioSeleccionada = `${this.pad(horaInicio)}:${this.pad}`;
-            this.horaFinSeleccionada = `${this.pad(horaFin)}:${this.pad}`;
+            this.horaInicioSeleccionada = `${this.pad(horaInicio)}:00`;
+            this.horaFinSeleccionada = `${this.pad(horaFin)}:00`;
             // Actualizar el campo 'horario' en el formulario con los horarios seleccionados
             const horariosActivos = this.fechas
                 .filter(fecha => fecha.active)
@@ -344,6 +341,8 @@ export class RegisterComponent {
                 .join(', ');
             this.registerBarberiaForm.get('horario')?.setValue(horariosActivos);
             this.registerBarberiaForm.get('horario')?.updateValueAndValidity();
+            // Actualizar la propiedad hours de la fecha seleccionada
+            this.selectedfecha.hours = `Desde ${this.horaInicioSeleccionada} hasta ${this.horaFinSeleccionada}`;
             this.showModal = false; // Cerrar el modal
         } else {
             console.error('No se ha seleccionado una fecha válida.');
