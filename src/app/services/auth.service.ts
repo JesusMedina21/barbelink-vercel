@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { appsettings } from '../settings/appsettings';
 import { Cliente } from '../models-interfaces/Cliente';
-import { map, Observable, catchError, of } from 'rxjs';
+import { map, Observable, catchError, of, throwError } from 'rxjs';
 import { ResponseAcceso } from '../models-interfaces/ResponseAcceso';
 import { Login } from '../models-interfaces/Login';
 import { Router } from '@angular/router';
@@ -88,25 +88,16 @@ export class AuthService {
             })
         );
     }
- 
     crearTurno(turno: any): Observable<any> {
         const token = this.getToken();
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
-        // Obtener el cliente_id desde el token
-        const clienteId = this.getClienteId();
-    
-        // Agregar el clienteId al objeto turno
-        turno.cliente_id = clienteId;
-    
         return this.http.post<any>(`${this.baseUrl}turnos/book`, turno, { headers }).pipe(
             catchError(error => {
                 console.error('Error creando turno:', error);
-                return of(null);
+                return throwError(error); // Lanza el error nuevamente
             })
         );
     }
-    
     // Método para obtener el cliente_id desde el token
     getClienteId(): number | null {
         const token = this.getToken();
