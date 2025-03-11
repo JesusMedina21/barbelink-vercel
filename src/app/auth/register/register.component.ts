@@ -360,9 +360,12 @@ export class RegisterComponent {
         this.showModal = false; // Cerrar el modal
     }
     openModal() {
+        if (!this.hasSelectedfechas()) {
+            this.notificacionService.showMessage('Por favor, selecciona al menos un día antes de registrar el horario.', 'error');
+            return;
+        }
         this.showModal = true;
     }
-
     closeModal() {
         this.showModal = false;
     }
