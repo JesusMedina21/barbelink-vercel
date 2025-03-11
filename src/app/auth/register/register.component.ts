@@ -109,11 +109,10 @@ export class RegisterComponent {
         confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
         telefono: ['', [Validators.required, Validators.pattern(/^\+\d{1,15}$/), Validators.minLength(12), Validators.maxLength(15)]],
         cuilResponsable: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
-
         direccion: ['', [Validators.required, Validators.minLength(8), Validators.pattern(/^[a-zA-Z0-9\s.,-]+$/), Validators.maxLength(100)]],
         descripcion: [''],
         horario: [''],
-        fotoPerfil: [''],
+        fotoPerfil: ['', [Validators.required, Validators.pattern(/^(http|https):\/\/[^ "]+$/)]], // Validación para URL
     }, { validators: this.passwordsMatchValidator() });
 
     showLettersError = false;
@@ -185,7 +184,7 @@ export class RegisterComponent {
                 direccion: this.registerBarberiaForm.value.direccion,
                 descripcion: this.registerBarberiaForm.value.descripcion,
                 horario: this.registerBarberiaForm.value.horario,
-                fotoPerfil: this.registerBarberiaForm.value.fotoPerfil,
+                fotoPerfil: this.registerBarberiaForm.value.fotoPerfil, // Aquí se envía la URL de la imagen
             };
 
             this.authService.registroBarberia(formData).subscribe({
