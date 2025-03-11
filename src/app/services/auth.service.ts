@@ -54,18 +54,8 @@ export class AuthService {
     }
     
     
-
-    //registroBarberia(objeto: FormData): Observable<ResponseAcceso> {
-    //    const headers = new HttpHeaders();
-    //    headers.append('Accept', 'application/json'); // No establecer 'Content-Type' ya que FormData lo maneja
-    //
-    //    return this.http.post<ResponseAcceso>(`${this.baseUrl}barberias/register`, objeto, { headers });
-    //}
+   
     
-
-    //registroBarberia(formData: FormData): Observable<ResponseAcceso> {
-    //    return this.http.post<ResponseAcceso>(`${this.baseUrl}barberias/register`, formData);
-    //}
     login(objeto: Login): Observable<ResponseAcceso> {
         return this.http.post<ResponseAcceso>(`${this.baseUrl}login`, objeto).pipe(
             map(response => {
@@ -98,10 +88,16 @@ export class AuthService {
             })
         );
     }
-
+ 
     crearTurno(turno: any): Observable<any> {
         const token = this.getToken();
         const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+        // Obtener el cliente_id desde el token
+        const clienteId = this.getClienteId();
+    
+        // Agregar el clienteId al objeto turno
+        turno.cliente_id = clienteId;
     
         return this.http.post<any>(`${this.baseUrl}turnos/book`, turno, { headers }).pipe(
             catchError(error => {
@@ -110,6 +106,20 @@ export class AuthService {
             })
         );
     }
+    
+    // Método para obtener el cliente_id desde el token
+    getClienteId(): number | null {
+        const token = this.getToken();
+        if (!token) return null;
+        try {
+            const decoded: any = jwtDecode(token);
+            return decoded.clienteId || null; // Asegúrate de que el token tenga el campo `clienteId`
+        } catch (error) {
+            console.error('Error decoding token', error);
+            return null;
+        }
+    }
+    
     
     confirmarTurno(id: number): Observable<any> {
         const token = this.getToken();

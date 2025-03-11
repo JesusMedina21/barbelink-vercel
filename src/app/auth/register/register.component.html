@@ -421,6 +421,8 @@
                         <br>
                     
                         <button type="submit" 
+
+                        [disabled]="registerBarberiaForm.invalid || !hasSelectedfechas() || isSubmitting" 
                             [ngClass]="{
                                 'bg-amber-300 hover:bg-amber-400': registerBarberiaForm.valid && hasSelectedfechas() && !isSubmitting,
                                 'bg-orange-300': (registerBarberiaForm.invalid || !hasSelectedfechas() || isSubmitting)

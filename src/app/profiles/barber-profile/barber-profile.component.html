@@ -66,7 +66,7 @@
     </section>
     <section class="p-4">
       <app-horario *ngIf="selectedContent === 'horario'"></app-horario>
-      <app-turno-barberia *ngIf="selectedContent === 'turno'"></app-turno-barberia>
+      <app-turno-barberia [barberId]="id" *ngIf="selectedContent === 'turno'"></app-turno-barberia>
       <app-comments *ngIf="selectedContent === 'comments'"></app-comments>
     </section>
   </main>
