@@ -153,6 +153,7 @@
             <form [formGroup]="registerBarberiaForm" (ngSubmit)="registroBarberia()">
                 <div *ngIf="selectedRole === 'barberia'">
                     <div *ngIf="currentPage === 1">
+                    
                         <div class="mt-4">
                             <input id="RegisterName" placeholder="Nombre del barbero o barberia"
                                 formControlName="nombreBarberia"
@@ -309,6 +310,7 @@
                     </div>
                     <div *ngIf="currentPage === 2">
                         <div class="mt-4" *ngIf="selectedRole === 'barberia'">
+                         
                             <input id="Registerdireccion" placeholder="Dirección" formControlName="direccion"
                                 class="block w-full px-4 py-2 border rounded-lg bg-black dark:bg-black dark:text-neutral-50 dark:border-neutral-50 focus:ring-opacity-40 dark:focus:border-amber-400 focus:outline-none focus:ring"
                                 type="text" />
@@ -322,12 +324,27 @@
                                     class="text-red-500">La dirección solo puede contener letras, números, comas, puntos
                                     y guiones.</small>
                             </div>
+                           
+                            <div class="mt-4">
+                                <input id="RegisterFotoPerfil" placeholder="URL de la foto de perfil" formControlName="fotoPerfil"
+                                    class="block w-full px-4 py-2 border rounded-lg bg-black dark:bg-black dark:text-neutral-50 dark:border-neutral-50 focus:ring-opacity-40 dark:focus:border-amber-400 focus:outline-none focus:ring"
+                                    type="text" />
+                                <div *ngIf="registerBarberiaForm.get('fotoPerfil')?.invalid && (registerBarberiaForm.get('fotoPerfil')?.touched || registerBarberiaForm.get('fotoPerfil')?.dirty)">
+                                    <small *ngIf="registerBarberiaForm.get('fotoPerfil')?.errors?.['required']" class="text-red-500">La URL de la foto es obligatoria.</small>
+                                    <small *ngIf="registerBarberiaForm.get('fotoPerfil')?.errors?.['pattern']" class="text-red-500">La URL debe ser un enlace válido.</small>
+                                </div>
+                                <div *ngIf="registerBarberiaForm.get('fotoPerfil')?.value">
+                                    <img [src]="registerBarberiaForm.get('fotoPerfil')?.value" alt="Foto de perfil" class="mt-4 w-32 h-32 object-cover rounded" />
+                                </div>
+                            </div>
+                        
                         </div>
                         <br>
+                     
                         <button type="button" (click)="nextPage()"
-                            [disabled]="registerBarberiaForm.get('direccion')?.invalid" [ngClass]="{
-                                'bg-orange-300': registerBarberiaForm.get('direccion')?.invalid,
-                                'bg-amber-300 hover:bg-amber-400': !registerBarberiaForm.get('direccion')?.invalid
+                            [disabled]="registerBarberiaForm.get('direccion')?.invalid  || registerBarberiaForm.get('fotoPerfil')?.invalid" [ngClass]="{
+                                'bg-orange-300': registerBarberiaForm.get('direccion')?.invalid  || registerBarberiaForm.get('fotoPerfil')?.invalid,
+                                'bg-amber-300 hover:bg-amber-400': !registerBarberiaForm.get('direccion')?.invalid || !registerBarberiaForm.get('fotoPerfil')?.invalid
                             }" class="w-full py-3 rounded-md text-black">
                             Siguiente
                         </button>
@@ -371,12 +388,21 @@
                         <div class="mt-4">
                             <h2 class="text-white text-xl mb-4">Horario de atención</h2>
                             <p class="text-gray-400 mb-4">¿En qué horarios pueden atenderse los clientes?</p>
-                            <p class="text-gray-400 mb-4">El tiempo maximo para atender a un cliente es de 1 hora</p>
+                            <p class="text-gray-400 mb-4">El tiempo máximo para atender a un cliente es de 1 hora</p>
+                            <button type="button" (click)="openModal()" class="w-full py-3 rounded-md bg-neutral-700 hover:bg-neutral-600 text-white">
+                                Registrar Horario
+                            </button>
+                            <p class="text-gray-400 mt-2" *ngIf="horarioSeleccionado">
+                                Horario seleccionado: {{ horarioSeleccionado }}
+                            </p>
+                            <p class="text-gray-400 mt-2" *ngIf="!horarioSeleccionado">
+                                Horario seleccionado: 
+                            </p>
+                            <br><br>
                             <div *ngFor="let fecha of fechas; let i = index" class="mb-2">
                                 <div class="flex items-center p-3 rounded-lg bg-neutral-800">
                                     <div class="flex items-center">
-                                        <div
-                                            class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                        <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
                                             <input type="checkbox" name="toggle" id="toggle_{{i}}"
                                                 class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
                                                 [(ngModel)]="fecha.active" [ngModelOptions]="{standalone: true}">
@@ -386,42 +412,33 @@
                                         </div>
                                         <span class="text-white">{{ fecha.name }}</span>
                                     </div>
-                                    <div class="flex-grow flex justify-center">
-                                        <span class="text-gray-400" *ngIf="!fecha.hours">Registrar hora</span>
-                                        <span class="text-gray-400" *ngIf="fecha.hours">{{ fecha.hours }}</span>
-                                    </div>
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                        class="h-5 w-5 text-gray-400 cursor-pointer ml-auto" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor" (click)="openModal(fecha)">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 5l7 7-7 7" />
-                                    </svg>
                                 </div>
                             </div>
                         </div>
-                        <br>
-                        
-                        <button type="submit" 
-                        [disabled]="registerBarberiaForm.invalid || !hasSelectedfechas() || isSubmitting" 
-                        [ngClass]="{
-                            'bg-amber-300 hover:bg-amber-400': registerBarberiaForm.valid && hasSelectedfechas() && !isSubmitting,
-                            'bg-orange-300': (registerBarberiaForm.invalid || !hasSelectedfechas() || isSubmitting)
-                        }" 
-                        class="w-full py-3 rounded-md text-black"
-                        (click)="registrarBarberiaYAgregarHorario()">
-                        Registrarse
-                    </button>
                     
+                   
+                    
+                        <br>
+                    
+                        <button type="submit" 
+                            [ngClass]="{
+                                'bg-amber-300 hover:bg-amber-400': registerBarberiaForm.valid && hasSelectedfechas() && !isSubmitting,
+                                'bg-orange-300': (registerBarberiaForm.invalid || !hasSelectedfechas() || isSubmitting)
+                            }" 
+                            class="w-full py-3 rounded-md text-black"
+                            (click)="registrarBarberiaYAgregarHorario()">
+                            Registrarse
+                        </button>
                     
                         <button type="button" (click)="previousPage()"
                             class="w-full py-3 rounded-md bg-neutral-600 hover:bg-neutral-700  text-black">
                             Anterior
                         </button>
                     </div>
+
                     <!--Modal de horas-->
                     <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                         <div class="bg-neutral-900 p-6 rounded-lg w-96">
-                            <h2 class="text-white text-lg mb-4">{{ selectedfecha.name }}</h2>
                             <div class="mb-4">
                                 <label class="block text-gray-400 mb-2">Apertura:</label>
                                 <div class="flex items-center">
