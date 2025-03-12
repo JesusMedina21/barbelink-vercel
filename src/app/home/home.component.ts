@@ -48,19 +48,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
     
     ngAfterViewInit(): void {
         this.initSwiper();
-        this.carruselBarberias
+        this.loadBarberias
     }
     
     onSearch(): void {
         this.errorMessage = ''; // Limpiar mensaje anterior
-
-        if (!this.authService.isAuthenticated()) {
-            this.errorMessage = 'Necesitas estar autenticado para poder realizar búsquedas';
-            return; // Detiene la ejecución si no está autenticado
-        }
-
         const searchTerm = (document.getElementById('default-search') as HTMLInputElement).value.toLowerCase().trim();
-
         if (searchTerm) {
             this.filteredBarberias = this.barberias.filter(barberia => 
                 barberia.nombreBarberia.toLowerCase().startsWith(searchTerm) ||  // Filtra solo por las iniciales
@@ -109,17 +102,6 @@ export class HomeComponent implements OnInit, AfterViewInit {
         });
     }
 
-    carruselBarberias(): void {
-        this.authService.getBarberias().subscribe({
-            next: (barberias) => {
-                this.barberias = barberias.slice(0, 6); // Solo tomar las primeras 6 barberías
-            },
-            error: (error) => {
-                console.error('Error loading barberías:', error);
-                this.notificacionService.showMessage('Error al cargar barberías.', 'error');
-            }
-        });
-    }
     goToBarberProfile(barberiaId: string): void {
         this.router.navigate(['/profile/barber', barberiaId]);
     }
