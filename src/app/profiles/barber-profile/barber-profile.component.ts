@@ -56,20 +56,22 @@ export class BarberProfileComponent implements OnInit {
 
   getProfileJson() {
     this.barberProfileService.getBarbers(this.id).subscribe({
-        next: (data) => {
-            this.barberProfile = data;
-            this.errorMessage = '';
-        },
-        error: (err) => {
-            this.barberProfile = null;
-            this.errorMessage = 'Esta barbería no existe';
-            // Mostrar alerta con NotificacionService
-            this.notificacionService.showMessage(this.errorMessage, 'error');
-            // Redirigir al usuario al inicio o a otra página segura
-            this.router.navigate(['/']);
-        }
+      next: (data) => {
+        this.barberProfile = data;
+        this.errorMessage = '';
+      },
+      error: (err) => {
+        this.barberProfile = null;
+        this.errorMessage = 'Esta barberia no existe';
+
+        // Mostrar alerta con NotificacionService
+        this.notificacionService.showMessage(this.errorMessage, 'error');
+
+        // Redirigir al usuario al inicio o a otra página segura
+        this.router.navigate(['/']);
+      }
     });
-}
+  }
 
 
   goBack(): void {

@@ -66,10 +66,10 @@ export class AuthService {
         );
     }
     
-
-
     getBarberias(): Observable<Barberia[]> {
-        return this.http.get<Barberia[]>(`${this.baseUrl}barberias`).pipe(
+        const token = this.getToken();
+        const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+        return this.http.get<Barberia[]>(`${this.baseUrl}barberias`, { headers }).pipe(
             catchError(error => {
                 console.error('Error fetching barberias:', error);
                 return of([]); // Retorna un arreglo vacío en caso de error
