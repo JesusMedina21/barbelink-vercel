@@ -262,8 +262,13 @@ export class RegisterComponent {
         const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
         const diaActual = fechaActual.getDay();
         const diaSeleccionado = diasSemana.indexOf(dia);
-        const diferencia = diaSeleccionado - diaActual;
-    
+        
+        // Calcular la diferencia de días
+        let diferencia = diaSeleccionado - diaActual;
+        // Si la diferencia es negativa, significa que el día seleccionado ya pasó esta semana
+        if (diferencia < 0) {
+            diferencia += 6; // Mover a la próxima semana
+        }
         const fecha = new Date(fechaActual);
         fecha.setDate(fechaActual.getDate() + diferencia);
         return fecha;

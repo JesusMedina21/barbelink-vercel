@@ -48,6 +48,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     
     ngAfterViewInit(): void {
         this.initSwiper();
+        this.carruselBarberias
     }
     
     onSearch(): void {
@@ -106,6 +107,21 @@ export class HomeComponent implements OnInit, AfterViewInit {
                 this.notificacionService.showMessage('Error al cargar barberías.', 'error');
             }
         });
+    }
+
+    carruselBarberias(): void {
+        this.authService.getBarberias().subscribe({
+            next: (barberias) => {
+                this.barberias = barberias.slice(0, 6); // Solo tomar las primeras 6 barberías
+            },
+            error: (error) => {
+                console.error('Error loading barberías:', error);
+                this.notificacionService.showMessage('Error al cargar barberías.', 'error');
+            }
+        });
+    }
+    goToBarberProfile(barberiaId: string): void {
+        this.router.navigate(['/profile/barber', barberiaId]);
     }
     // GOOGLE MAPS
     center: google.maps.LatLngLiteral = { lat: 37.7749, lng: -122.4194 };
