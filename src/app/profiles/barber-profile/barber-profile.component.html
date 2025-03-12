@@ -60,8 +60,11 @@
 
       <button class="button-toggle-profile" [class.button-activate]="selectedContent === 'turno'"
       (click)="selectContent('turno')">Turnos</button>
+      <!--
+      
       <button class="button-toggle-profile" [class.button-activate]="selectedContent === 'comments'"
         (click)="selectContent('comments')">Comentarios</button>
+      -->
     </section>
     <section class="p-4">
       <app-horario *ngIf="selectedContent === 'horario'"></app-horario>
